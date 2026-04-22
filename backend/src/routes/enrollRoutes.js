@@ -7,10 +7,11 @@ import { enrollInCourse, updateProgress } from '../controllers/enrollController.
 // All enrollment routes require being logged in
 router.use(protect);
 
+// Student only: Mark a lesson as completed
+// NOTE: This must come BEFORE /:courseId to avoid route conflict
+router.patch('/progress/:courseId', authorizeRoles('student'), updateProgress);
+
 // Student only: Enroll in a specific course
 router.post('/:courseId', authorizeRoles('student'), enrollInCourse);
-
-// Student only: Mark a lesson as completed
-router.patch('/progress/:courseId', authorizeRoles('student'), updateProgress);
 
 export default router;

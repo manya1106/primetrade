@@ -10,11 +10,22 @@ const generateToken = (id) => {
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Name, email, and password are required' });
+    }
+
+    // Only allow student or mentor roles on registration (not admin)
+    const allowedRoles = ['student', 'mentor'];
+    const userRole = allowedRoles.includes(role) ? role : 'student';
+
     const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: 'User already exists with this email' });
+    }
 
-    if (userExists) return res.status(400).json({ message: 'User already exists' });
-
-    const user = await User.create({ name, email, password, role });
+    const user = await User.create({ name, email, password, role: userRole });
 
     res.status(201).json({
       _id: user._id,
@@ -24,6 +35,7 @@ export const registerUser = async (req, res) => {
       token: generateToken(user._id)
     });
   } catch (error) {
+    console.error('Register error:', error);
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
@@ -33,6 +45,11 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
@@ -47,6 +64,7 @@ export const loginUser = async (req, res) => {
       res.status(401).json({ message: 'Invalid email or password' });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
