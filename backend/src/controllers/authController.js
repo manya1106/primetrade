@@ -7,7 +7,7 @@ const generateToken = (id) => {
 
 // @desc    Register new user
 // @route   POST /api/auth/register
-exports.registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
     const userExists = await User.findOne({ email });
@@ -30,7 +30,7 @@ exports.registerUser = async (req, res) => {
 
 // @desc    Auth user & get token
 // @route   POST /api/auth/login
-exports.loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });

@@ -1,8 +1,8 @@
-import Enrollment from '../models/Enrollment';
-import Lesson from '../models/Lesson';
+import Enrollment from '../models/Enrollment.js';
+import Lesson from '../models/Lesson.js';
 
 // @desc    Enroll in a course
-exports.enrollInCourse = async (req, res) => {
+export const enrollInCourse = async (req, res) => {
   try {
     const alreadyEnrolled = await Enrollment.findOne({ 
       studentId: req.user._id, 
@@ -22,7 +22,7 @@ exports.enrollInCourse = async (req, res) => {
 };
 
 // @desc    Update progress (Mark lesson complete)
-exports.updateProgress = async (req, res) => {
+export const updateProgress = async (req, res) => {
   try {
     const { lessonId } = req.body;
     const enrollment = await Enrollment.findOne({ 

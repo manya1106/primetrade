@@ -1,13 +1,13 @@
-import User from '../models/User';
-import Course from '../models/Course';
+import User from '../models/User.js';
+
 // @desc    Get all users
-exports.getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   const users = await User.find({}).select('-password');
   res.json(users);
 };
 
 // @desc    Delete user
-exports.deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
     await user.deleteOne();
@@ -18,7 +18,7 @@ exports.deleteUser = async (req, res) => {
 };
 
 // @desc    Change user role
-exports.updateUserRole = async (req, res) => {
+export const updateUserRole = async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
     user.role = req.body.role || user.role;
